@@ -11,6 +11,6 @@ export const dataDropdownGender = [
 ]
 
 export const dataDropdownStatus = [
-  { label: 'Отметить как актуальное ', value: 'true' },
-  { label: 'Не отмечать как актуальное', value: 'false' },
+  { label: 'Отметить как актуальное ', value: '1' },
+  { label: 'Не отмечать как актуальное', value: '2' },
 ]

@@ -12,8 +12,8 @@ import axios from 'axios'
 import CheckBox from '@react-native-community/checkbox';
 import Modal from 'react-native-modal';
 import { Dropdown } from 'react-native-material-dropdown-v2'
-import * as ImagePicker from 'react-native-image-picker';
-
+// import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import { dataDropdownWeather, dataDropdownGender, dataDropdownStatus } from '../utils/dropdownData'
 
@@ -34,7 +34,9 @@ export default class AddNewProduct extends React.Component {
     price: '',
     modalWarningStatus: false,
     modalOpenImagePicker: false,
-    filePath: null
+    filePath: null,
+    ImageSource:[],
+    ImageSourceviewarray:[]
   }
 
   dropdownConstructor = (defaultLabel, changeData, data) => {
@@ -61,65 +63,105 @@ export default class AddNewProduct extends React.Component {
     )
   }
 
-  addPhoto = (flag) => {
-    console.log("FLAG : ", flag)
-    switch (flag) {
-      case 'gelery':
-        console.log('GELERY')
-        return (
-          ImagePicker.launchImageLibrary(
-            {
-              mediaType: 'photo',
-              includeBase64: true,
-              maxHeight: 400,
-              maxWidth: regarding_width,
-            },
-            (response) => {
-              this.setState({ filePath: response })
-            },
-          )
-        )
-      case 'camera':
-        console.log('CAMERA')
+  // addPhoto = (flag) => {
+  //   console.log("FLAG : ", flag)
+  //   switch (flag) {
+  //     case 'gelery':
+  //       console.log('GELERY')
+  //       return (
+  //         ImagePicker.launchImageLibrary(
+  //           {
+  //             mediaType: 'photo',
+  //             includeBase64: true,
+  //             maxHeight: 400,
+  //             maxWidth: regarding_width,
+  //           },
+  //           (response) => {
+  //             this.setState({ filePath: response.base64 })
+  //           },
+  //         )
+  //       )
+  //     case 'camera':
+  //       console.log('CAMERA')
 
-        return (
-          ImagePicker.launchCamera(
-            {
-              mediaType: 'photo',
-              includeBase64: true,
-              maxHeight: 400,
-              maxWidth: regarding_width,
-            },
-            (response) => {
-              console.log('response --- ', response)
-              this.setState({ filePath: response })
-            },
-          )
-        )
+  //       return (
+  //         ImagePicker.launchCamera(
+  //           {
+  //             mediaType: 'photo',
+  //             includeBase64: true,
+  //             maxHeight: 400,
+  //             maxWidth: regarding_width,
+  //           },
+  //           (response) => {
+  //             console.log('response --- ', response)
+  //             this.setState({ filePath: response.base64 })
+  //           },
+  //         )
+  //       )
 
-      default:
-        return
-    }
+  //     default:
+  //       return
+  //   }
+  // }
+
+
+  takePics = () => {
+    ImagePicker.openPicker({
+      width: 200,
+      height: 200, compressImageMaxHeight: 400,
+      compressImageMaxWidth: 400, cropping: true, multiple: true
+    })
+      .then(response => {
+        let tempArray = []
+        console.log("responseimage-------" + response)
+        this.setState({ ImageSource: response })
+        console.log("responseimagearray" + this.state.ImageSource)
+        response.forEach((item) => {
+          let image = {
+            uri: item.path,
+            // width: item.width,
+            // height: item.height,
+          }
+          console.log("imagpath==========" + image)
+          tempArray.push(image)
+          this.setState({ ImageSourceviewarray: tempArray })
+          // console.log('savedimageuri====='+item.path);
+
+          console.log("imagpath==========" + image)
+        })
+
+      })
+
   }
 
 
 
-  onSubmit = async() => {
+
+  onSubmit = async () => {
+    // const payload = {
+    //   relevant: Number(this.state.dropdownValueStatus),
+    //   category: this.state.dropdownValueWeather,
+    //   gender: this.state.dropdownValueGender,
+    //   name: this.state.title,
+    //   description: this.state.description,
+    //   price: this.state.price,
+    //   image: this.state.filePath
+    // }
     const payload = {
-      relevant: this.state.dropdownValueStatus,
-      category: this.state.dropdownValueWeather,
-      gender: this.state.dropdownValueGender,
-      name: this.state.title,
-      description: this.state.description,
-      price: this.state.price,
-      image: this.state.filePath
+      relevant: 2,
+      category: 'whinter',
+      gender: 'women',
+      name: 'Сапоги',
+      description: 'Теплые сапоги',
+      price: 1200,
+      image: 'dsflsdkjlfkdsjlfk'
     }
 
-    try{
-      const response = await axios.post('https://sleepy-cliffs-68954.herokuapp.com/api/product/create',payload)
-      console.log('RESPONSE : ',response)
-    }catch(e){
-      console.log('error',e)
+    try {
+      const response = await axios.post('https://sleepy-cliffs-68954.herokuapp.com/api/product/create', payload)
+      console.log('RESPONSE : ', response)
+    } catch (e) {
+      console.log('error', e)
     }
 
   }
@@ -366,97 +408,35 @@ const styles = StyleSheet.create({
 
 
 
-// export default function App() {
-//   const [response, setResponse] = React.useState(null);
 
-//   return (
-//     <SafeAreaView>
-//       <ScrollView>
-//         <Button
-//           title="Take image"
-//           onPress={() =>
-//             ImagePicker.launchCamera(
-//               {
-//                 mediaType: 'photo',
-//                 includeBase64: false,
-//                 maxHeight: 200,
-//                 maxWidth: 200,
-//               },
-//               (response) => {
-//                 setResponse(response);
-//               },
-//             )
-//           }
-//         />
 
-//         <Button
-//           title="Select image"
-//           onPress={() =>
-//             ImagePicker.launchImageLibrary(
-//               {
-//                 mediaType: 'photo',
-//                 includeBase64: false,
-//                 maxHeight: 200,
-//                 maxWidth: 200,
-//               },
-//               (response) => {
-//                 setResponse(response);
-//               },
-//             )
-//           }
-//         />
 
-//         <Button
-//           title="Take video"
-//           onPress={() =>
-//             ImagePicker.launchCamera({mediaType: 'video'}, (response) => {
-//               setResponse(response);
-//             })
-//           }
-//         />
 
-//         <Button
-//           title="Select video"
-//           onPress={() =>
-//             ImagePicker.launchImageLibrary({mediaType: 'video'}, (response) => {
-//               setResponse(response);
-//             })
-//           }
-//         />
+  // takePics = () => {
+  //   ImagePicker.openPicker({
+  //     width: 200,
+  //     height: 200, compressImageMaxHeight: 400,
+  //     compressImageMaxWidth: 400, cropping: true, multiple: true
+  //   })
+  //     .then(response => {
+  //       let tempArray = []
+  //       console.log("responseimage-------" + response)
+  //       this.setState({ ImageSource: response })
+  //       console.log("responseimagearray" + this.state.ImageSource)
+  //       response.forEach((item) => {
+  //         let image = {
+  //           uri: item.path,
+  //           // width: item.width,
+  //           // height: item.height,
+  //         }
+  //         console.log("imagpath==========" + image)
+  //         tempArray.push(image)
+  //         this.setState({ ImageSourceviewarray: tempArray })
+  //         // console.log('savedimageuri====='+item.path);
 
-//         <View style={styles.response}>
-//           <Text>Res: {JSON.stringify(response)}</Text>
-//         </View>
+  //         console.log("imagpath==========" + image)
+  //       })
 
-//         {response && (
-//           <View style={styles.image}>
-//             <Image
-//               style={{width: 200, height: 200}}
-//               source={{uri: response.uri}}
-//             />
-//           </View>
-//         )}
-//       </ScrollView>
-//     </SafeAreaView>
-//   );
-// }
+  //     })
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: 'center',
-//     backgroundColor: '#F5FCFF',
-//   },
-//   button: {
-//     marginVertical: 24,
-//     marginHorizontal: 24,
-//   },
-//   image: {
-//     marginVertical: 24,
-//     alignItems: 'center',
-//   },
-//   response: {
-//     marginVertical: 16,
-//     marginHorizontal: 8,
-//   },
-// });
+  // }
