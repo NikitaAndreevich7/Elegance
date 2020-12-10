@@ -12,10 +12,12 @@ import axios from 'axios'
 import CheckBox from '@react-native-community/checkbox';
 import Modal from 'react-native-modal';
 import { Dropdown } from 'react-native-material-dropdown-v2'
+import { ColorPicker } from 'react-native-color-picker'
 // import * as ImagePicker from 'react-native-image-picker';
-import ImagePicker from 'react-native-image-crop-picker';
+// import ImagePicker from 'react-native-image-crop-picker';
 
 import { dataDropdownWeather, dataDropdownGender, dataDropdownStatus } from '../utils/dropdownData'
+import { overflowMenuPressHandlerActionSheet } from 'react-navigation-header-buttons';
 
 const regarding_width = Dimensions.get('window').width
 
@@ -35,8 +37,10 @@ export default class AddNewProduct extends React.Component {
     modalWarningStatus: false,
     modalOpenImagePicker: false,
     filePath: null,
-    ImageSource:[],
-    ImageSourceviewarray:[]
+    ImageSource: [],
+    ImageSourceviewarray: [],
+    colorPickerStatus: false,
+    palette: []
   }
 
   dropdownConstructor = (defaultLabel, changeData, data) => {
@@ -63,76 +67,76 @@ export default class AddNewProduct extends React.Component {
     )
   }
 
-  // addPhoto = (flag) => {
-  //   console.log("FLAG : ", flag)
-  //   switch (flag) {
-  //     case 'gelery':
-  //       console.log('GELERY')
-  //       return (
-  //         ImagePicker.launchImageLibrary(
-  //           {
-  //             mediaType: 'photo',
-  //             includeBase64: true,
-  //             maxHeight: 400,
-  //             maxWidth: regarding_width,
-  //           },
-  //           (response) => {
-  //             this.setState({ filePath: response.base64 })
-  //           },
-  //         )
-  //       )
-  //     case 'camera':
-  //       console.log('CAMERA')
+  addPhoto = (flag) => {
+    console.log("FLAG : ", flag)
+    switch (flag) {
+      case 'gelery':
+        console.log('GELERY')
+        return (
+          ImagePicker.launchImageLibrary(
+            {
+              mediaType: 'photo',
+              includeBase64: true,
+              maxHeight: 400,
+              maxWidth: regarding_width,
+            },
+            (response) => {
+              this.setState({ filePath: response.base64 })
+            },
+          )
+        )
+      case 'camera':
+        console.log('CAMERA')
 
-  //       return (
-  //         ImagePicker.launchCamera(
-  //           {
-  //             mediaType: 'photo',
-  //             includeBase64: true,
-  //             maxHeight: 400,
-  //             maxWidth: regarding_width,
-  //           },
-  //           (response) => {
-  //             console.log('response --- ', response)
-  //             this.setState({ filePath: response.base64 })
-  //           },
-  //         )
-  //       )
+        return (
+          ImagePicker.launchCamera(
+            {
+              mediaType: 'photo',
+              includeBase64: true,
+              maxHeight: 400,
+              maxWidth: regarding_width,
+            },
+            (response) => {
+              console.log('response --- ', response)
+              this.setState({ filePath: response.base64 })
+            },
+          )
+        )
 
-  //     default:
-  //       return
-  //   }
-  // }
-
-
-  takePics = () => {
-    ImagePicker.openPicker({
-      width: 200,
-      height: 200, compressImageMaxHeight: 400,
-      compressImageMaxWidth: 400, cropping: true, multiple: true
-    })
-      .then(response => {
-        let tempArray = []
-        console.log("responseimage-------" + response)
-        this.setState({ ImageSource: response })
-        console.log("responseimagearray" + this.state.ImageSource)
-        response.forEach((item) => {
-          let image = {
-            uri: item.path,
-            // width: item.width,
-            // height: item.height,
-          }
-          console.log("imagpath==========" + image)
-          tempArray.push(image)
-          this.setState({ ImageSourceviewarray: tempArray })
-          // console.log('savedimageuri====='+item.path);
-
-          console.log("imagpath==========" + image)
-        })
-
-      })
-
+      default:
+        return
+    }
   }
+
+
+  // takePics = () => {
+  //   ImagePicker.openPicker({
+  //     width: 200,
+  //     height: 200, compressImageMaxHeight: 400,
+  //     compressImageMaxWidth: 400, cropping: true, multiple: true
+  //   })
+  //     .then(response => {
+  //       let tempArray = []
+  //       console.log("responseimage-------" + response)
+  //       this.setState({ ImageSource: response })
+  //       console.log("responseimagearray" + this.state.ImageSource)
+  //       response.forEach((item) => {
+  //         let image = {
+  //           uri: item.path,
+  //           // width: item.width,
+  //           // height: item.height,
+  //         }
+  //         console.log("imagpath==========" + image)
+  //         tempArray.push(image)
+  //         this.setState({ ImageSourceviewarray: tempArray })
+  //         // console.log('savedimageuri====='+item.path);
+
+  //         console.log("imagpath==========" + image)
+  //       })
+
+  //     })
+
+  // }
 
 
 
@@ -180,7 +184,9 @@ export default class AddNewProduct extends React.Component {
       price,
       modalWarningStatus,
       modalImagePrickerStatus,
-      filePath
+      filePath,
+      colorPickerStatus,
+      palette
     } = this.state;
 
     const modlWarning = (
@@ -244,6 +250,33 @@ export default class AddNewProduct extends React.Component {
       </Modal>
     )
 
+    const paletteList = (
+      palette.length ?
+      (
+        palette.map(color => {
+          return (
+            <Text style={{ width: 50, height: 50, backgroundColor: `${color}` }}></Text>
+          )
+        })
+      ) : null
+    )
+
+    const selectColor = colorPickerStatus ? (
+      <View style={{ position: 'absolute', zIndex: 100000, backgroundColor: 'rgba(0,0,0, .9)', width: '100%', height: '70%', bottom: 0 }}>
+        <ColorPicker
+          onColorSelected={color => this.setState({ palette: color })}
+          style={{ flex: 1 }}
+          hideSliders={true}
+          hideControls={false}
+        />
+        <View>
+          {paletteList}
+        </View>
+        <TouchableOpacity style={{ padding: 10, marginLeft: 'auto', marginRight: 'auto', backgroundColor: 'silver' }} onPress={() => this.setState({ colorPickerStatus: false })}>
+          <Text>Close</Text>
+        </TouchableOpacity>
+      </View>
+    ) : null
 
 
 
@@ -262,6 +295,7 @@ export default class AddNewProduct extends React.Component {
       <ScrollView style={styles.content}>
         {modlWarning}
         {modalOpenImagePicker}
+        {selectColor}
         <View style={styles.imageBox}>
           {
             !filePath ?
@@ -288,6 +322,9 @@ export default class AddNewProduct extends React.Component {
 
         <TouchableOpacity style={styles.btnSubmit} onPress={() => this.onSubmit()}>
           <Text style={styles.btnSubmitText}>Добавить</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.setState({ colorPickerStatus: true })}>
+          <Text>Color</Text>
         </TouchableOpacity>
       </ScrollView>
     )

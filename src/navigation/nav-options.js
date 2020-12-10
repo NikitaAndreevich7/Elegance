@@ -198,11 +198,12 @@ export const options_AddNewProduct = ({ navigation }) => ({
     <TouchableOpacity
       style={{
         marginLeft: 20,
-        position: 'absolute',
+        // position: 'absolute',
         backgroundColor: '#30BA8F',
         width: 60, height: 60, borderRadius: 100,
         justifyContent: 'center',
-        alignItems: 'center', top: 20
+        alignItems: 'center', top: 20,
+        zIndex:-1
       }}
       onPress={() => navigation.navigate('Home')}>
        <Icon name="arrow-back-outline" size={30} color="#fff" />
