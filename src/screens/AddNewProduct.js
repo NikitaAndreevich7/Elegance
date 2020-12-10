@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Image, ScrollView,
+  Image,
+  ScrollView,
   Dimensions
 } from 'react-native'
 import axios from 'axios'
@@ -17,9 +18,11 @@ import { ColorPicker } from 'react-native-color-picker'
 // import ImagePicker from 'react-native-image-crop-picker';
 
 import { dataDropdownWeather, dataDropdownGender, dataDropdownStatus } from '../utils/dropdownData'
-import { overflowMenuPressHandlerActionSheet } from 'react-navigation-header-buttons';
+
 
 const regarding_width = Dimensions.get('window').width
+const regarding_height = Dimensions.get('screen').height
+
 
 export default class AddNewProduct extends React.Component {
 
@@ -108,35 +111,11 @@ export default class AddNewProduct extends React.Component {
     }
   }
 
+  filterPaletteList = (color) => {
+    const newListPalette = this.state.palette.filter((item) => item !== color)
+    this.setState({ palette: newListPalette })
+  }
 
-  // takePics = () => {
-  //   ImagePicker.openPicker({
-  //     width: 200,
-  //     height: 200, compressImageMaxHeight: 400,
-  //     compressImageMaxWidth: 400, cropping: true, multiple: true
-  //   })
-  //     .then(response => {
-  //       let tempArray = []
-  //       console.log("responseimage-------" + response)
-  //       this.setState({ ImageSource: response })
-  //       console.log("responseimagearray" + this.state.ImageSource)
-  //       response.forEach((item) => {
-  //         let image = {
-  //           uri: item.path,
-  //           // width: item.width,
-  //           // height: item.height,
-  //         }
-  //         console.log("imagpath==========" + image)
-  //         tempArray.push(image)
-  //         this.setState({ ImageSourceviewarray: tempArray })
-  //         // console.log('savedimageuri====='+item.path);
-
-  //         console.log("imagpath==========" + image)
-  //       })
-
-  //     })
-
-  // }
 
 
 
@@ -250,33 +229,56 @@ export default class AddNewProduct extends React.Component {
       </Modal>
     )
 
-    const paletteList = (
-      palette.length ?
-      (
-        palette.map(color => {
-          return (
-            <Text style={{ width: 50, height: 50, backgroundColor: `${color}` }}></Text>
-          )
-        })
-      ) : null
-    )
-
     const selectColor = colorPickerStatus ? (
-      <View style={{ position: 'absolute', zIndex: 100000, backgroundColor: 'rgba(0,0,0, .9)', width: '100%', height: '70%', bottom: 0 }}>
+      <View style={styles.palette__general_container}>
         <ColorPicker
-          onColorSelected={color => this.setState({ palette: color })}
-          style={{ flex: 1 }}
+          onColorSelected={color => {
+            if (this.state.palette.length === 5) {
+              return alert('Вы можете обавить не больше 5 цветов.')
+            }
+            this.setState({ palette: [...this.state.palette, color] })
+          }}
+          style={styles.palette__colorPicker}
           hideSliders={true}
           hideControls={false}
         />
-        <View>
-          {paletteList}
+        <View style={styles.palette__selectedColors}>
+          {
+            palette.map(color => {
+              return (
+                <TouchableOpacity style={styles.palette__collorWrapper} onLongPress={() => this.filterPaletteList(color)}>
+                  <Text style={[styles.palette__colorElement, { backgroundColor: `${color}` }]}></Text>
+                </TouchableOpacity>
+              )
+            })
+          }
         </View>
-        <TouchableOpacity style={{ padding: 10, marginLeft: 'auto', marginRight: 'auto', backgroundColor: 'silver' }} onPress={() => this.setState({ colorPickerStatus: false })}>
-          <Text>Close</Text>
-        </TouchableOpacity>
+        <View style={styels.palette__btnWrapper}>
+          <TouchableOpacity style={[styels.palette__btn, {}]} onPress={() => this.setState({ colorPickerStatus: false })}>
+            <Text>Закрыть</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.palette__btn, {}]} onPress={() => this.setState({ colorPickerStatus: false })}>
+            <Text>Добавить</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     ) : null
+
+
+    //----image content
+    const imageContent = !filePath ?
+      <>
+        <Text style={styles.textImg}>Изображение</Text>
+        <TouchableOpacity style={styles.buttonAddImage} onPress={() => this.setState({ modalImagePrickerStatus: true })}>
+          <Text style={styles.textBtnImage}>Добавить</Text>
+        </TouchableOpacity>
+      </> :
+      <Image
+        style={{ width: '100%', height: '100%' }}
+        source={{ uri: filePath.uri }}
+      />
+
+
 
 
 
@@ -297,19 +299,7 @@ export default class AddNewProduct extends React.Component {
         {modalOpenImagePicker}
         {selectColor}
         <View style={styles.imageBox}>
-          {
-            !filePath ?
-              <>
-                <Text style={styles.textImg}>Изображение</Text>
-                <TouchableOpacity style={styles.buttonAddImage} onPress={() => this.setState({ modalImagePrickerStatus: true })}>
-                  <Text style={styles.textBtnImage}>Добавить</Text>
-                </TouchableOpacity>
-              </> :
-              <Image
-                style={{ width: '100%', height: '100%' }}
-                source={{ uri: filePath.uri }}
-              />
-          }
+          {imageContent}
 
         </View>
         {dropdownConstructor__weather}
@@ -371,7 +361,6 @@ const styles = StyleSheet.create({
     marginRight: 'auto'
   },
 
-
   //--input
   input: {
     width: '96%',
@@ -384,7 +373,6 @@ const styles = StyleSheet.create({
   },
 
   //--btn
-
   btnSubmit: {
     width: '30%',
     backgroundColor: "#30D5C8",
@@ -395,12 +383,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 20
   },
-
   btnSubmitText: {
     fontSize: 17,
     color: '#fff'
   },
-
   buttomImagePickerModal: {
     margin: 20
   },
@@ -434,6 +420,47 @@ const styles = StyleSheet.create({
     backgroundColor: 'silver',
     borderRadius: 5,
     color: '#fff'
+  },
+
+  //---color picker
+  palette__general_container: {
+    position: 'absolute',
+    zIndex: 100000,
+    backgroundColor: 'rgba(0,0,0, .9)',
+    width: '100%',
+    height: '70%',
+    bottom: 0
+  },
+  palette__colorPicker: {
+    height: '50%',
+    width: '100%'
+  },
+  palette__selectedColors: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'center'
+  },
+  palette__collorWrapper: {
+    margin: 10
+  },
+  palette__colorElement: {
+    width: 50,
+    height: 50,
+  },
+  palette__btn: {
+    width: '40%',
+    padding: 10,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    backgroundColor: 'silver'
+  },
+  palette_btnWrapper: {
+    position: 'absolute',
+    width: '100%',
+    bottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   }
 })
 
@@ -441,39 +468,3 @@ const styles = StyleSheet.create({
 //application - android manifest.xml
 // android:requestLegacyExternalStorage="true"
 
-
-
-
-
-
-
-
-
-  // takePics = () => {
-  //   ImagePicker.openPicker({
-  //     width: 200,
-  //     height: 200, compressImageMaxHeight: 400,
-  //     compressImageMaxWidth: 400, cropping: true, multiple: true
-  //   })
-  //     .then(response => {
-  //       let tempArray = []
-  //       console.log("responseimage-------" + response)
-  //       this.setState({ ImageSource: response })
-  //       console.log("responseimagearray" + this.state.ImageSource)
-  //       response.forEach((item) => {
-  //         let image = {
-  //           uri: item.path,
-  //           // width: item.width,
-  //           // height: item.height,
-  //         }
-  //         console.log("imagpath==========" + image)
-  //         tempArray.push(image)
-  //         this.setState({ ImageSourceviewarray: tempArray })
-  //         // console.log('savedimageuri====='+item.path);
-
-  //         console.log("imagpath==========" + image)
-  //       })
-
-  //     })
-
-  // }
