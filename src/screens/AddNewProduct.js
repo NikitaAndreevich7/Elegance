@@ -246,15 +246,15 @@ export default class AddNewProduct extends React.Component {
           {
             palette.map(color => {
               return (
-                <TouchableOpacity style={styles.palette__collorWrapper} onLongPress={() => this.filterPaletteList(color)}>
+                <TouchableOpacity key={Math.random() * 23} style={styles.palette__collorWrapper} onLongPress={() => this.filterPaletteList(color)}>
                   <Text style={[styles.palette__colorElement, { backgroundColor: `${color}` }]}></Text>
                 </TouchableOpacity>
               )
             })
           }
         </View>
-        <View style={styels.palette__btnWrapper}>
-          <TouchableOpacity style={[styels.palette__btn, {}]} onPress={() => this.setState({ colorPickerStatus: false })}>
+        <View style={styles.palette_btnWrapper}>
+          <TouchableOpacity style={[styles.palette__btn, {}]} onPress={() => this.setState({ colorPickerStatus: false })}>
             <Text>Закрыть</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.palette__btn, {}]} onPress={() => this.setState({ colorPickerStatus: false })}>
@@ -452,7 +452,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginLeft: 'auto',
     marginRight: 'auto',
-    backgroundColor: 'silver'
+    backgroundColor: 'silver',
+    justifyContent:'center',
+    alignItems:'center'
   },
   palette_btnWrapper: {
     position: 'absolute',
