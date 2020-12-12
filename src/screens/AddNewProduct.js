@@ -130,6 +130,7 @@ export default class AddNewProduct extends React.Component {
     //   price: this.state.price,
     //   image: this.state.filePath
     // }
+    
     const payload = {
       relevant: 2,
       category: 'whinter',
