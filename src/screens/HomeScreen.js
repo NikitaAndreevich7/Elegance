@@ -1,22 +1,24 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Button } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native'
 import { CarouselPopular } from '../components/carousel'
 import { Header } from '../components/header'
 import Modal from 'react-native-modal';
 import { SvgXml } from 'react-native-svg';
 import { like, menu,attention } from '../ui/svg/svg_const'
 import FavouritesDatabase from '../server/favourites-db'
+import Hoc from '../hocs/home-screen-hoc'
 
-import TestDB from '../components/test__db'
 
-export default class HomeScreen extends Component {
+class HomeScreen extends Component {
 
   state = {
-    modalStatus: false
+    modalStatus: false,
+    favoritesList: null
   }
 
   componentDidMount(){
     FavouritesDatabase.createDB()
+    this.setState({favoritesList:this.props.favoritesList})
     this.startTimer()
   }
 
@@ -27,7 +29,16 @@ export default class HomeScreen extends Component {
 
   render() {
 
-    const { modalStatus } = this.state;
+    const { modalStatus,favoritesList } = this.state;
+
+    if (favoritesList == null) {
+      return (
+        <View style={styles.contentSpinner}>
+          <ActivityIndicator />
+          <StatusBar barStyle="default" />
+        </View>
+      )
+    }
 
     const modalBox = (
       <Modal
@@ -89,7 +100,7 @@ export default class HomeScreen extends Component {
         {modalBox}
         <View style={styles.carouselBox}>
           <Text style={styles.carouselBox__title}>Популярное</Text>
-          <CarouselPopular nav={this.props.navigation} />
+          <CarouselPopular nav={this.props.navigation} favoritesList={favoritesList} />
         </View>
       </View>
     )
@@ -214,3 +225,5 @@ const styles = StyleSheet.create({
     color:'#fff'
   }
 })
+
+export default Hoc(HomeScreen)

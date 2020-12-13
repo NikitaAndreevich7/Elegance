@@ -121,25 +121,31 @@ export default class AddNewProduct extends React.Component {
 
 
   onSubmit = async () => {
-    // const payload = {
-    //   relevant: Number(this.state.dropdownValueStatus),
-    //   category: this.state.dropdownValueWeather,
-    //   gender: this.state.dropdownValueGender,
-    //   name: this.state.title,
-    //   description: this.state.description,
-    //   price: this.state.price,
-    //   image: this.state.filePath
-    // }
-    
     const payload = {
-      relevant: 2,
-      category: 'whinter',
-      gender: 'women',
-      name: 'Сапоги',
-      description: 'Теплые сапоги',
-      price: 1200,
-      image: 'dsflsdkjlfkdsjlfk'
+      relevant: Number(this.state.dropdownValueStatus),
+      category: this.state.dropdownValueWeather,
+      gender: this.state.dropdownValueGender,
+      name: this.state.title,
+      description: this.state.description,
+      price: this.state.price,
+      images: [
+        'https://images.crafta.ua/products/1723787',
+        'https://images.crafta.ua/products/1723788',
+        'https://images.crafta.ua/products/1723790',
+      ],
+      palette:`${this.state.palette}`
     }
+    
+    // const payload = {
+    //   relevant: 1,
+    //   category: 'whinter',
+    //   gender: 'women',
+    //   name: 'Пальто',
+    //   description: 'Теплые Пальто',
+    //   price: 1200,
+    //   image: 'dsflsdkjlfkdsjlfk',
+    //   palette:`${this.state.palette}`
+    // }
 
     try {
       const response = await axios.post('https://sleepy-cliffs-68954.herokuapp.com/api/product/create', payload)
@@ -254,8 +260,8 @@ export default class AddNewProduct extends React.Component {
             })
           }
         </View>
-        <View style={styels.palette__btnWrapper}>
-          <TouchableOpacity style={[styels.palette__btn, {}]} onPress={() => this.setState({ colorPickerStatus: false })}>
+        <View style={styles.palette__btnWrapper}>
+          <TouchableOpacity style={[styles.palette__btn, {}]} onPress={() => this.setState({ colorPickerStatus: false })}>
             <Text>Закрыть</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.palette__btn, {}]} onPress={() => this.setState({ colorPickerStatus: false })}>

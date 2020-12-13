@@ -9,15 +9,18 @@ const { width: screenWidth } = Dimensions.get('window')
 const { height: screenHeight } = Dimensions.get('window')
 
 
-export const CarouselPopular = (props) => {
+export const CarouselPopular = ({favoritesList,nav}) => {
+
 
 
   const _renderItem = ({ item, index }, parallaxProps) => {
+    const img = item.images.slice(0,item.images.length -1)
+    console.log(img[0])
     return (
       <View style={stylesPopular.slider}>
-        <TouchableOpacity style={{ width: '100%', height: '80%' }} onPress={() => props.nav.navigate('ProductDetails', { product: item })}>
+        <TouchableOpacity style={{ width: '100%', height: '80%' }} onPress={() => nav.navigate('ProductDetails', { product: item })}>
           <ParallaxImage
-            source={{ uri: item.images[0] }}
+            source={{ uri: img[0]}}
             containerStyle={stylesPopular.slider__container}
             style={stylesPopular.slider__image}
             parallaxFactor={0.4}
@@ -40,7 +43,7 @@ export const CarouselPopular = (props) => {
       sliderWidth={screenWidth}
       sliderHeight={screenWidth}
       itemWidth={screenWidth - 60}
-      data={favourites}
+      data={favoritesList}
 
       renderItem={_renderItem}
       hasParallaxImages={true}
