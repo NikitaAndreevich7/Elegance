@@ -4,6 +4,7 @@ import ProductItem from './product-item'
 import Modal from 'react-native-modal';
 import { SvgXml } from 'react-native-svg';
 import { filter } from '../ui/svg/svg_const'
+
 export default class ProductsList extends Component {
 
   state = {

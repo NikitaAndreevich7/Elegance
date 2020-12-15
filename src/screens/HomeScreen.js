@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native'
-import { CarouselPopular } from '../components/carousel'
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, StatusBar,ScrollView } from 'react-native'
+import ProductsList from '../components/products-list'
 import { Header } from '../components/header'
 import Modal from 'react-native-modal';
 import { SvgXml } from 'react-native-svg';
@@ -13,12 +13,12 @@ class HomeScreen extends Component {
 
   state = {
     modalStatus: false,
-    favoritesList: null
+    popular: null
   }
 
   componentDidMount(){
     FavouritesDatabase.createDB()
-    this.setState({favoritesList:this.props.favoritesList})
+    this.setState({popular:this.props.popular})
     this.startTimer()
   }
 
@@ -29,12 +29,12 @@ class HomeScreen extends Component {
 
   render() {
 
-    const { modalStatus,favoritesList } = this.state;
+    const { modalStatus,popular } = this.state;
 
-    if (favoritesList == null) {
+    if (popular == null) {
       return (
         <View style={styles.contentSpinner}>
-          <ActivityIndicator />
+          <ActivityIndicator size="small" color="#0000ff" />
           <StatusBar barStyle="default" />
         </View>
       )
@@ -96,12 +96,11 @@ class HomeScreen extends Component {
     return (
       <View style={styles.content}>
         <Header title='Elegance' description='Пошив одежды любой сложности.' />
-        {/* <TestDB /> */}
         {modalBox}
-        <View style={styles.carouselBox}>
+        <ScrollView style={styles.carouselBox}>
           <Text style={styles.carouselBox__title}>Популярное</Text>
-          <CarouselPopular nav={this.props.navigation} favoritesList={favoritesList} />
-        </View>
+          <ProductsList productLists={popular} nav={this.props.navigation} />
+        </ScrollView>
       </View>
     )
   }
@@ -113,6 +112,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     // backgroundColor: '#fff'
+  },
+  contentSpinner:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center'
   },
   carouselBox: {
     zIndex: 1000,

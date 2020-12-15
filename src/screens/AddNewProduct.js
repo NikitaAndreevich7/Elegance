@@ -14,7 +14,7 @@ import CheckBox from '@react-native-community/checkbox';
 import Modal from 'react-native-modal';
 import { Dropdown } from 'react-native-material-dropdown-v2'
 import { ColorPicker } from 'react-native-color-picker'
-// import * as ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'react-native-image-picker';
 // import ImagePicker from 'react-native-image-crop-picker';
 
 import { dataDropdownWeather, dataDropdownGender, dataDropdownStatus } from '../utils/dropdownData'
@@ -128,11 +128,7 @@ export default class AddNewProduct extends React.Component {
       name: this.state.title,
       description: this.state.description,
       price: this.state.price,
-      images: [
-        'https://images.crafta.ua/products/1723787',
-        'https://images.crafta.ua/products/1723788',
-        'https://images.crafta.ua/products/1723790',
-      ],
+      images: "https://pbs.twimg.com/profile_images/1060122402204606464/Uy0ltR1b.jpg",
       palette:`${this.state.palette}`
     }
     
@@ -282,7 +278,7 @@ export default class AddNewProduct extends React.Component {
       </> :
       <Image
         style={{ width: '100%', height: '100%' }}
-        source={{ uri: filePath.uri }}
+        source={{ uri: `data:image/gif;base64,${filePath}` }}
       />
 
 

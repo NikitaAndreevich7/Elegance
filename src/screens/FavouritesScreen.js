@@ -1,6 +1,6 @@
 import React, { Component,Fragment } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator, StatusBar, TextInput, TouchableOpacity } from 'react-native'
-import ProductList from '../components/products-list'
+import ProductsList from '../components/products-list'
 import StickyParallaxHeader from 'react-native-sticky-parallax-header'
 import FavouritesDatabase from '../server/favourites-db'
 
@@ -50,7 +50,7 @@ export default class FavouritesScreen extends Component {
 
     const content = favouritesList.length > 0 ?
       (
-        <ProductList productLists={favouritesList} nav={this.props.navigation} />
+        <ProductsList productLists={favouritesList} nav={this.props.navigation} />
       ) :
       (
         <View style={styles.titleBox}>
@@ -61,7 +61,6 @@ export default class FavouritesScreen extends Component {
 
     return (
       <View style={styles.content}>
-
         <StickyParallaxHeader
           headerType="AvatarHeader"
           image={0}

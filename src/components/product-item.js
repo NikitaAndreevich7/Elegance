@@ -12,9 +12,7 @@ export default class ProductItem extends Component {
       <TouchableOpacity style={styles.productBox} onPress={() => this.props.nav.navigate('ProductDetails',{product: this.props.product})}>
         <Image
           style={{width:'100%',height:'100%'}}
-          source={{
-            uri: images[0],
-          }}
+          source={{ uri: images[0] }}
         />
         <Text style={styles.productName}>{name}</Text>
       </TouchableOpacity>
