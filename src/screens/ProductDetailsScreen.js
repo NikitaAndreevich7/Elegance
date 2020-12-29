@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, ActivityIndicator, StatusBar, Modal, Image, TouchableOpacity,Share } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, StatusBar, Modal, Image, TouchableOpacity, Share, ScrollView } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer';
 import { SvgXml } from 'react-native-svg';
-import { help, shared,like, likeActive } from '../ui/svg/svg_const'
+import { help, shared, like, likeActive } from '../ui/svg/svg_const'
 import FavouritesDatabase from '../server/favourites-db'
 
 
@@ -12,7 +12,7 @@ export default class ProductDetailsScreen extends Component {
     product: null,
     imageSlider: null,
     viewImageStatus: false,
-    likeBtnStatus:false
+    likeBtnStatus: false
   }
 
   componentDidMount() {
@@ -24,17 +24,17 @@ export default class ProductDetailsScreen extends Component {
   }
 
   onShare = async () => {
-    const {product,imageSlider} = this.state;
+    const { product, imageSlider } = this.state;
     try {
       const result = await Share.share({
-        
-        message:imageSlider[0].url.toString(),
-        title:`Ателье Elegance. \n${product.name}  ${product.price}`,
+
+        message: imageSlider[0].url.toString(),
+        title: `Ателье Elegance. \n${product.name}  ${product.price}`,
 
       },
-      {
-        dialogTitle: 'Ателье Elegance.Пошив одежды.'
-      }
+        {
+          dialogTitle: 'Ателье Elegance.Пошив одежды.'
+        }
       );
 
       if (result.action === Share.sharedAction) {
@@ -62,8 +62,8 @@ export default class ProductDetailsScreen extends Component {
   }
 
   //проверяем есть данный продукт в избранном и в зависимости от ответа, красим иконку
-  checkElementFromDatabase = (id) =>{
-    FavouritesDatabase.read(id,res => this.setState({likeBtnStatus: res.length > 0 ? true : false}))
+  checkElementFromDatabase = (id) => {
+    FavouritesDatabase.read(id, res => this.setState({ likeBtnStatus: res.length > 0 ? true : false }))
   }
 
   // создаем структуру данных для слайдера.
@@ -80,15 +80,15 @@ export default class ProductDetailsScreen extends Component {
   }
 
   // удаляем/добавляем продукт в избранное
-  changeStatusFavorites = (product) =>{
-    this.setState({likeBtnStatus: !this.state.likeBtnStatus})
+  changeStatusFavorites = (product) => {
+    this.setState({ likeBtnStatus: !this.state.likeBtnStatus })
 
     FavouritesDatabase.update(product)
   }
 
   render() {
 
-    const { imageSlider, viewImageStatus, product,likeBtnStatus } = this.state;
+    const { imageSlider, viewImageStatus, product, likeBtnStatus } = this.state;
 
 
     if (imageSlider == null) {
@@ -161,14 +161,15 @@ export default class ProductDetailsScreen extends Component {
         </TouchableOpacity>
       </View>
     )
-    
+
     const btnLike = (
       <TouchableOpacity style={styles.btnLikeBox} onPress={() => this.changeStatusFavorites(product)}>
-      <SvgXml xml={likeBtnStatus ? likeActive : like} width="60%" height="100%" />
+        <SvgXml xml={likeBtnStatus ? likeActive : like} width="60%" height="100%" />
       </TouchableOpacity>
     )
 
     return (
+
       <View style={styles.containerProductDetials}>
         {btnLike}
         {imageView}
@@ -177,113 +178,115 @@ export default class ProductDetailsScreen extends Component {
         {content}
         {bottomBtnGroup}
       </View>
+
     )
   }
 }
 
 const styles = StyleSheet.create({
-  containerProductDetials:{
-    width:'100%',
-    height:'100%',
-    backgroundColor:'#fff'
+  containerProductDetials: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff'
   },
   contentSpinner: {
-        flex: 1,
-        width: "100%",
-        justifyContent: "center",
-        alignContent: "center",
-      },
-  header:{
-    width:'100%',
-    height:'60%',
-    backgroundColor:'#fff',
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  header: {
+    width: '100%',
+    height: '60%',
+    backgroundColor: '#fff',
 
   },
-  defaultImageSlider:{
-    width:'100%',
-    height:'100%',
-    resizeMode:'cover',
-    borderBottomRightRadius:50,
-    borderBottomLeftRadius:50
+  defaultImageSlider: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderBottomRightRadius: 50,
+    borderBottomLeftRadius: 50
 
   },
-  content:{
-    backgroundColor:'#fff',
-    width:'100%',
+  content: {
+    backgroundColor: '#fff',
+    width: '100%',
     // height:'100%'
   },
 
-  contentDescription:{
-    marginTop:20,
-    padding:15
+  contentDescription: {
+    marginTop: 20,
+    padding: 15
   },
-  nameText:{
-    fontSize:30
+  nameText: {
+    fontSize: 30
   },
 
-  priceBox:{
-    width:'100%',
-    marginTop:15,
-    flexDirection:'row',
-    alignItems:'flex-end'
+  priceBox: {
+    width: '100%',
+    marginTop: 15,
+    flexDirection: 'row',
+    alignItems: 'flex-end'
   },
-  descriptionPrice:{
-    color:'grey',
-    marginRight:20,
-    fontSize:20
+  descriptionPrice: {
+    color: 'grey',
+    marginRight: 20,
+    fontSize: 20
   },
-  priceText:{
-    fontSize:30,
-    color:'black',
+  priceText: {
+    fontSize: 30,
+    color: 'black',
   },
-  boxPriceAndImg:{
-    flexDirection:'row'
+  boxPriceAndImg: {
+    flexDirection: 'row'
   },
-  palette:{
-    paddingTop:15,
-    paddingLeft:20
+  palette: {
+    paddingTop: 15,
+    paddingLeft: 20
   },
-  paletteBox:{
-    flexDirection:'row',
+  paletteBox: {
+    flexDirection: 'row',
   },
-  paletteText:{
-    fontSize:17,
-    color:'silver'
+  paletteText: {
+    fontSize: 17,
+    color: 'silver'
   },
-  btnGroupBox:{
-    width:'100%',
-    flexDirection:'row',
-    justifyContent:'space-between',
-    paddingTop:30,
-    paddingLeft:15,
-    paddingRight:15
+  btnGroupBox: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 30,
+    paddingLeft: 15,
+    paddingRight: 15
   },
-  btnBox:{
-    width:'40%',
-    backgroundColor:'#30BA8F',
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'center',
-    padding:8,
-    paddingTop:15,
-    paddingBottom:15,
-    borderRadius:15
-  },
-  btnText:{
-    marginLeft:10,
-    color:'#fff',
-    fontSize:18
-  },
-  btnLikeBox:{
-    width:50,
-    height:50,
-    top:'56%',
+  btnBox: {
+    width: '40%',
     backgroundColor: '#30BA8F',
-    justifyContent:'center',
-    alignItems:'center',
-    position:'absolute',
-    zIndex:100,
-    right:20,
-    borderRadius:100,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+    paddingTop: 15,
+    paddingBottom: 15,
+    borderRadius: 15
+  },
+  btnText: {
+    marginLeft: 10,
+    color: '#fff',
+    fontSize: 18
+  },
+  btnLikeBox: {
+    width: 50,
+    height: 50,
+    top: '56%',
+    backgroundColor: '#30BA8F',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    zIndex: 100,
+    right: 20,
+    borderRadius: 100,
   },
 })
